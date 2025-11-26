@@ -1,0 +1,2924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lily's Life | V9 World Integrated</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Nunito:wght@400;700;900&display=swap');
+
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --glass-highlight: rgba(255, 255, 255, 0.5);
+            --neon-pink: #f472b6;
+            --deep-purple: #4c1d95;
+            --gem-gradient: linear-gradient(145deg, #db2777, #9d174d);
+            --text-main: #fce7f3;
+            --text-muted: rgba(252, 231, 243, 0.6);
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #2e1065 0%, #701a75 50%, #be185d 100%);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glitter Overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .font-title { font-family: 'Nunito', sans-serif; }
+
+        /* Glass Panels */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border-radius: 24px;
+            transition: all 0.3s ease;
+        }
+
+        /* Gemstone Buttons */
+        .btn-gem {
+            background: var(--gem-gradient);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 10px rgba(157, 23, 77, 0.5);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            border-radius: 50px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .btn-gem:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 6px 15px rgba(236, 72, 153, 0.6);
+            filter: brightness(1.1);
+        }
+        .btn-gem:active { transform: translateY(1px); }
+        
+        /* Map Button Variant */
+        .btn-map {
+            background: linear-gradient(145deg, #0ea5e9, #0284c7); /* Sky Blue */
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 10px rgba(2, 132, 199, 0.5);
+        }
+        .btn-map:hover {
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 6px 15px rgba(14, 165, 233, 0.6);
+        }
+        
+        /* Next Button Variant */
+        .btn-next {
+            background: linear-gradient(145deg, #8b5cf6, #6d28d9); /* Purple */
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 10px rgba(109, 40, 217, 0.5);
+        }
+        .btn-next:hover {
+            box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 6px 15px rgba(139, 92, 246, 0.6);
+        }
+
+        /* Ghost Buttons (Tabs) */
+        .btn-glass {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #f5d0fe;
+            border-radius: 12px;
+            transition: all 0.2s;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+        .btn-glass:hover, .btn-glass.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-color: #f0abfc;
+            box-shadow: 0 0 15px rgba(240, 171, 252, 0.3);
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #ec4899, #8b5cf6); border-radius: 10px; }
+
+        /* Tank Bars */
+        .tank-track { background: rgba(0,0,0,0.3); border-radius: 10px; height: 8px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
+        .tank-fill { height: 100%; border-radius: 10px; transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .fill-vit { background: linear-gradient(90deg, #f472b6, #db2777); box-shadow: 0 0 10px #db2777; }
+        .fill-comp { background: linear-gradient(90deg, #a78bfa, #7c3aed); box-shadow: 0 0 10px #a78bfa; }
+        .fill-sync { background: linear-gradient(90deg, #fbbf24, #d97706); box-shadow: 0 0 10px #d97706; }
+
+        /* Trait Bars */
+        .trait-track { background: rgba(0,0,0,0.4); border-radius: 6px; height: 6px; position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* DIAMOND POINTERS FOR TRAITS */
+        .trait-marker { 
+            width: 12px; height: 12px; 
+            background: #fff; 
+            position: absolute; top: -3px; 
+            transform: rotate(45deg) translateX(-50%);
+            border: 2px solid rgba(0,0,0,0.5);
+            box-shadow: 0 0 8px white; 
+            transition: left 0.3s; 
+            margin-left: -6px; /* Center pivot */
+        }
+        .fill-pres { background: linear-gradient(90deg, #3b82f6 0%, #ffffff 50%, #ec4899 100%); }
+        .fill-gaze { background: linear-gradient(90deg, #fbbf24 0%, #f97316 100%); }
+        .fill-power { background: linear-gradient(90deg, #86efac 0%, #15803d 100%); }
+
+        /* Slot Cards */
+        .slot-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 10px;
+            transition: all 0.2s;
+        }
+        .slot-card.filled {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-color: rgba(244, 114, 182, 0.5);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .slot-card.locked { opacity: 0.5; background: repeating-linear-gradient(45deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.2) 10px, rgba(0,0,0,0.2) 20px); }
+
+        /* Modal */
+        .modal-overlay {
+            background: rgba(46, 16, 101, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Matrix Cell Styles */
+        .matrix-wheel-center {
+            background: radial-gradient(circle at 30% 30%, #f472b6, #be185d);
+            box-shadow: 0 0 30px rgba(244, 114, 182, 0.6);
+            border: 2px solid white;
+        }
+
+        /* SVG Styles */
+        .poly-bg { fill: rgba(255,255,255,0.05); stroke: rgba(255,255,255,0.2); }
+        .poly-active { fill: rgba(244, 114, 182, 0.3); stroke: #f472b6; filter: drop-shadow(0 0 8px #f472b6); stroke-width: 2; }
+        
+        /* Thermometer */
+        .thermo-glass { background: rgba(0,0,0,0.3); border-radius: 20px; border: 2px solid rgba(255,255,255,0.2); }
+        .thermo-liquid { background: linear-gradient(to top, #3b82f6, #f472b6, #ef4444); border-radius: 20px; }
+        .thermo-indicator { background: #fff; box-shadow: 0 0 10px #fff; height: 4px; width: 140%; left: -20%; position: absolute; border-radius: 2px; transition: bottom 0.3s; }
+
+        /* Menu Button */
+        .menu-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex; items-center; justify-center;
+            color: #fce7f3;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .menu-btn:hover { background: rgba(255,255,255,0.2); color: white; border-color: #f472b6; box-shadow: 0 0 15px rgba(244, 114, 182, 0.4); }
+
+        /* STANDARD RANGE INPUT STYLE (Diamond Thumbs) */
+        input[type=range] { -webkit-appearance: none; background: transparent; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px; width: 16px;
+            background: #fff;
+            border: 2px solid #db2777;
+            transform: rotate(45deg); /* Diamond */
+            cursor: pointer;
+            margin-top: -6px; /* Vertical center */
+            box-shadow: 0 0 10px rgba(236, 72, 153, 0.8);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        /* Vertical Slider Override */
+        input[type=range].slider-vertical::-webkit-slider-thumb {
+            margin-top: 0; margin-left: -6px; /* Center horizontally for vertical track */
+        }
+        
+        /* Toggle Switch */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #68D391;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #68D391;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            transition: .4s;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 2px; bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider-round {
+            background-color: #ec4899;
+        }
+        input:checked + .slider-round:before {
+            transform: translateX(20px);
+        }
+
+        /* Typing Animation */
+        .typewriter-text {
+            overflow: hidden;
+            white-space: pre-wrap;
+            animation: typing 1s steps(40, end);
+        }
+        
+        /* Map Hotspots */
+        .map-hotspot {
+            position: absolute;
+            border: 2px solid rgba(255,255,255,0.0);
+            background: rgba(255,255,255,0.0); /* Fully transparent by default */
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .map-hotspot:hover {
+            background: rgba(255, 255, 255, 0.15); /* Subtle highlight on hover */
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+        }
+        .hotspot-label {
+            position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; font-weight: bold; color: white; text-shadow: 0 0 5px black;
+            opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: nowrap;
+            background: rgba(0,0,0,0.7); padding: 2px 4px; border-radius: 4px; z-index: 100;
+        }
+        .map-hotspot:hover .hotspot-label { opacity: 1; }
+
+    </style>
+</head>
+<body class="p-4 gap-4">
+
+    <!-- HEADER -->
+    <header class="h-16 shrink-0 glass-panel flex items-center justify-between px-6 z-20">
+        <div class="flex items-center gap-4">
+            <!-- Menu Trigger -->
+            <button onclick="toggleMainMenu(true)" class="menu-btn text-lg flex items-center justify-center">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-600 flex items-center justify-center text-white text-lg shadow-[0_0_15px_rgba(236,72,153,0.6)] border border-white/30">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div>
+                <h1 class="text-2xl font-title font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-pink-200 drop-shadow-sm tracking-wide">
+                    LILY'S LIFE <span class="font-light opacity-70">V9</span>
+                </h1>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <div id="api-status" class="text-[10px] font-bold text-white/30 uppercase tracking-widest px-3 py-1 border border-white/10 rounded-full bg-black/20">
+                <i class="fas fa-circle text-[6px] mr-1"></i> Offline
+            </div>
+            <button onclick="toggleDevPanel()" class="text-pink-200 hover:text-white text-xs font-bold tracking-widest uppercase bg-white/10 px-4 py-2 rounded-full border border-white/20 hover:bg-white/20 transition">
+                <i class="fas fa-sliders-h mr-2"></i>Dev Tools
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN GRID -->
+    <div class="flex-1 grid grid-cols-12 gap-4 overflow-hidden relative z-10">
+        
+        <!-- LEFT: HUD & STATUS -->
+        <div class="col-span-3 glass-panel p-5 flex flex-col gap-4 relative overflow-hidden">
+            
+            <!-- Environment (Moved to Top) -->
+            <div class="bg-black/20 rounded-2xl p-3 flex justify-between items-center border border-white/5 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="h-10 w-3 relative thermo-glass overflow-hidden">
+                        <div class="thermo-indicator" id="temp-indicator" style="bottom: 50%;"></div>
+                        <div class="absolute bottom-0 w-full h-full thermo-liquid opacity-50"></div>
+                    </div>
+                    <div>
+                        <div class="text-[9px] uppercase text-pink-300 font-bold">Thermo</div>
+                        <div class="text-lg font-bold text-white" id="temp-text">65°F</div>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-[9px] uppercase text-pink-300 font-bold">Visibility</div>
+                    <div class="flex items-center justify-end gap-2">
+                        <span class="text-lg font-bold text-white" id="total-exposure">20%</span>
+                        <i class="fas fa-eye text-pink-400 drop-shadow-[0_0_5px_rgba(244,114,182,0.8)]"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tanks -->
+            <div class="space-y-2 shrink-0">
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold text-pink-200 uppercase mb-1"><span>Vitality</span><span id="val-vitality">100%</span></div>
+                    <div class="tank-track"><div id="bar-vitality" class="tank-fill fill-vit" style="width: 100%;"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold text-pink-200 uppercase mb-1"><span>Composure</span><span id="val-composure">100%</span></div>
+                    <div class="tank-track"><div id="bar-composure" class="tank-fill fill-comp" style="width: 100%;"></div></div>
+                </div>
+                <div>
+                    <div class="flex justify-between text-[10px] font-bold text-pink-200 uppercase mb-1"><span>Sync</span><span id="val-sync">50%</span></div>
+                    <div class="tank-track"><div id="bar-sync" class="tank-fill fill-sync" style="width: 50%;"></div></div>
+                </div>
+            </div>
+
+            <!-- Pentagram (Centered) -->
+            <div class="flex-1 flex flex-col items-center relative min-h-[180px]">
+                <div class="text-[10px] font-bold text-pink-300 tracking-[0.2em] mb-1">CURRENT ARCHETYPE</div>
+                <div id="archetype-name" class="text-lg font-title font-black text-white drop-shadow-[0_0_10px_rgba(244,114,182,0.8)] text-center w-full mb-4">THE DEFAULT</div>
+                
+                <div class="relative w-[180px] h-[180px]">
+                    <!-- Labels -->
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 text-[9px] font-bold text-white drop-shadow-md">WILL</div>
+                    <div class="absolute top-[35%] right-0 text-[9px] font-bold text-white drop-shadow-md">GRACE</div>
+                    <div class="absolute bottom-[20%] right-2 text-[9px] font-bold text-white drop-shadow-md">HEART</div>
+                    <div class="absolute bottom-[20%] left-2 text-[9px] font-bold text-white drop-shadow-md">FLAIR</div>
+                    <div class="absolute top-[35%] left-0 text-[9px] font-bold text-white drop-shadow-md">WIT</div>
+                    
+                    <svg viewBox="0 0 100 100" class="w-full h-full overflow-visible">
+                        <polygon points="50,10 90,40 75,90 25,90 10,40" class="poly-bg" stroke-width="0.5" />
+                        <polygon points="50,25 75,45 65,75 35,75 25,45" class="poly-bg" stroke-width="0.5" />
+                        <polygon id="stat-poly" points="50,25 75,45 65,75 35,75 25,45" class="poly-active" />
+                        <line x1="50" y1="50" x2="50" y2="10" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="50" y1="50" x2="90" y2="40" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="50" y1="50" x2="75" y2="90" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="50" y1="50" x2="25" y2="90" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="50" y1="50" x2="10" y2="40" stroke="rgba(255,255,255,0.1)" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Trait Bars -->
+            <div class="space-y-2 shrink-0 mb-4">
+                <div class="flex justify-between text-[8px] text-white/60 uppercase"><span>Masc</span><span>Fem</span></div>
+                <div class="trait-track fill-pres"><div class="trait-marker" id="mark-pres" style="left: 50%;"></div></div>
+                
+                <div class="flex justify-between text-[8px] text-white/60 uppercase mt-1"><span>Voyeur</span><span>Exhib</span></div>
+                <div class="trait-track fill-gaze"><div class="trait-marker" id="mark-gaze" style="left: 50%;"></div></div>
+                
+                <div class="flex justify-between text-[8px] text-white/60 uppercase mt-1"><span>Sub</span><span>Dom</span></div>
+                <div class="trait-track fill-power"><div class="trait-marker" id="mark-power" style="left: 50%;"></div></div>
+            </div>
+
+            <!-- Analysis Cell (Red Zone) -->
+            <div class="bg-black/30 rounded-xl p-3 border border-white/10 shrink-0 flex-1 flex flex-col">
+                <div class="text-[10px] font-bold text-pink-400 uppercase tracking-widest border-b border-white/10 pb-1 mb-2">Loadout Analysis</div>
+                <div class="flex-1 space-y-2 overflow-y-auto custom-scroll">
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-check-circle text-green-400 text-xs mt-0.5"></i>
+                        <div class="text-[10px] text-white/80 leading-tight">High <span class="text-green-300">FLAIR</span> bonus from current outfit.</div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-exclamation-triangle text-yellow-400 text-xs mt-0.5"></i>
+                        <div class="text-[10px] text-white/80 leading-tight">Vulnerable to <span class="text-yellow-300">Cold</span> environments.</div>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <i class="fas fa-times-circle text-red-400 text-xs mt-0.5"></i>
+                        <div class="text-[10px] text-white/80 leading-tight">Cannot perform <span class="text-red-300">Running</span> actions.</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- CENTER: INTERACTION MATRIX CELL -->
+        <div class="col-span-5 glass-panel flex flex-col relative overflow-hidden">
+            <!-- Log Area -->
+            <div class="flex-1 bg-black/20 p-4 overflow-y-auto flex flex-col gap-3" id="matrix-log">
+                <!-- Intro text injected here -->
+            </div>
+
+            <!-- Matrix Controls (SCALED UP) -->
+            <div class="h-[400px] bg-black/30 border-t border-white/10 flex items-center p-4 gap-4">
+                <!-- Wheel -->
+                <div class="relative w-[340px] h-[340px] shrink-0">
+                    <svg id="intent-wheel" viewBox="0 0 100 100" class="w-full h-full drop-shadow-xl transform -rotate-90">
+                        <!-- Paths injected via JS -->
+                    </svg>
+                    <!-- Center Hub -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <div class="w-24 h-24 rounded-full matrix-wheel-center flex flex-col items-center justify-center z-10 bg-pink-500 shadow-lg border-2 border-white">
+                            <span class="text-[10px] text-white/80 uppercase tracking-widest">INTENT</span>
+                            <span id="active-intent" class="text-lg font-black text-white">ENGAGE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slider -->
+                <div class="flex-1 h-full flex items-center gap-4 bg-white/5 rounded-xl px-6 py-4 border border-white/5">
+                    <input type="range" min="0" max="5" value="2" class="h-[320px] w-2 appearance-none bg-white/10 rounded-full outline-none slider-vertical" style="writing-mode: vertical-lr; direction: rtl;" oninput="updateStance(this.value)">
+                    <div class="h-[320px] flex flex-col justify-between text-left py-1 flex-1" id="stance-labels">
+                        <!-- Labels injected JS -->
+                    </div>
+                </div>
+
+                <!-- Action Column -->
+                <div class="h-full flex flex-col gap-3 w-24 shrink-0">
+                    <!-- Next Button (Hidden Initially) -->
+                    <button id="next-btn" onclick="advanceNarrative()" class="hidden flex-[0.7] btn-gem btn-next flex flex-col items-center justify-center gap-2 text-xs tracking-widest hover:scale-105 transition shadow-lg">
+                        <i class="fas fa-forward text-3xl"></i>
+                        <span class="text-sm" id="next-btn-label">NEXT</span>
+                    </button>
+
+                    <!-- Commit Button (Main) -->
+                    <button id="commit-btn" onclick="commitAction()" class="flex-[0.7] btn-gem flex flex-col items-center justify-center gap-2 text-xs tracking-widest hover:scale-105 transition shadow-lg">
+                        <i class="fas fa-bolt text-3xl"></i>
+                        <span class="text-sm">ACT</span>
+                    </button>
+                    
+                    <!-- Map Button (Yellow Zone) -->
+                    <button onclick="toggleMap(true)" class="flex-[0.3] btn-gem btn-map flex flex-col items-center justify-center gap-1 text-xs tracking-widest hover:scale-105 transition shadow-lg">
+                        <i class="fas fa-map text-xl"></i>
+                        <span class="text-[9px]">MAP</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: WARDROBE & LOADOUT -->
+        <div class="col-span-4 glass-panel p-5 flex flex-col">
+            <!-- Mini Loadout -->
+            <div class="bg-black/20 rounded-xl p-3 mb-4 border border-white/10 flex flex-col gap-2">
+                <div class="flex justify-between items-center border-b border-white/5 pb-1">
+                    <span class="text-[10px] font-bold text-pink-300 uppercase">Active Gear</span>
+                    <span class="text-[9px] text-white/50" id="sum-bonus">No Bonuses</span>
+                </div>
+                <div id="slots-mini-container" class="flex flex-col gap-1">
+                    <!-- Injected Slots -->
+                </div>
+                <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/5 text-center">
+                    <div><div class="text-[8px] text-cyan-200">INS</div><div class="text-xs font-bold text-white" id="sum-ins">0</div></div>
+                    <div><div class="text-[8px] text-pink-300">EXP</div><div class="text-xs font-bold text-white" id="sum-exp">0%</div></div>
+                    <div><div class="text-[8px] text-red-300">HEAT</div><div class="text-xs font-bold text-white" id="sum-heat">0</div></div>
+                </div>
+            </div>
+
+            <!-- Wardrobe List -->
+            <div class="flex justify-between items-center mb-2">
+                <h2 class="text-xs font-bold text-pink-200 uppercase tracking-widest">Wardrobe</h2>
+                <select id="sort-select" onchange="renderItemList()" class="bg-black/30 border border-white/20 text-[10px] text-white rounded px-2 py-1 outline-none focus:border-pink-400">
+                    <option value="name">A-Z</option>
+                    <option value="value">Value</option>
+                    <option value="heat">Warmth</option>
+                    <option value="expose">Risqué</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-4 gap-1 mb-3">
+                <button class="btn-glass active py-1 text-[9px]" onclick="setTab('undie')">Undies</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('bra')">Bras</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('top')">Tops</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('bottom')">Bots</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('fullbody')">Full</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('feet')">Shoes</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('work')">Work</button>
+                <button class="btn-glass py-1 text-[9px]" onclick="setTab('swim')">Swim</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-1 pr-2 custom-scroll" id="item-list">
+                <!-- Items injected -->
+            </div>
+
+            <div id="inspector" class="hidden absolute inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-20 rounded-2xl p-6">
+                <!-- Inspector Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- DEV PANEL -->
+    <div id="dev-panel" class="fixed top-20 -right-80 w-72 glass-panel p-6 z-50 transition-all duration-500 ease-in-out h-[80vh] overflow-y-auto">
+        <h3 class="text-xs font-bold text-purple-300 uppercase tracking-widest mb-4 border-b border-white/10 pb-2">Simulation Controls</h3>
+        
+        <div class="flex justify-between items-center mb-6 bg-white/10 p-2 rounded-lg">
+            <span class="text-[10px] font-bold text-pink-300">Unlock All Items</span>
+            <label class="toggle-switch">
+                <input type="checkbox" id="toggle-unlock" onchange="toggleUnlockAll()">
+                <span class="slider-round"></span>
+            </label>
+        </div>
+
+        <div class="space-y-6">
+            <div>
+                <label class="text-[10px] font-bold text-white mb-1 block flex justify-between"><span>Vitality</span><span class="text-pink-300" id="lbl-vit">100%</span></label>
+                <input type="range" min="0" max="100" value="100" class="w-full" oninput="updateSimState('vitality', this.value)">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-white mb-1 block flex justify-between"><span>Composure</span><span class="text-pink-300" id="lbl-comp">100%</span></label>
+                <input type="range" min="0" max="100" value="100" class="w-full" oninput="updateSimState('composure', this.value)">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-white mb-1 block flex justify-between"><span>Sync</span><span class="text-pink-300" id="lbl-sync">50%</span></label>
+                <input type="range" min="0" max="100" value="50" class="w-full" oninput="updateSimState('sync', this.value)">
+            </div>
+            <div>
+                <label class="text-[10px] font-bold text-white mb-1 block flex justify-between"><span>Environment Temp</span><span class="text-pink-300" id="lbl-temp">65°F</span></label>
+                <input type="range" min="0" max="110" value="65" class="w-full" oninput="updateSimState('temp', this.value)">
+            </div>
+            <div class="pt-4 border-t border-white/10">
+                <h4 class="text-[10px] font-bold text-purple-200 mb-2">Base Stats</h4>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><span class="text-[9px] text-white">Will</span> <input type="number" value="5" min="1" max="10" class="w-full bg-black/30 text-white text-xs p-1 rounded border border-white/10" id="in-bwill" onchange="updateSimState('bWill', this.value)"></div>
+                    <div><span class="text-[9px] text-white">Grace</span> <input type="number" value="5" min="1" max="10" class="w-full bg-black/30 text-white text-xs p-1 rounded border border-white/10" id="in-bgrace" onchange="updateSimState('bGrace', this.value)"></div>
+                    <div><span class="text-[9px] text-white">Wit</span> <input type="number" value="5" min="1" max="10" class="w-full bg-black/30 text-white text-xs p-1 rounded border border-white/10" id="in-bwit" onchange="updateSimState('bWit', this.value)"></div>
+                    <div><span class="text-[9px] text-white">Heart</span> <input type="number" value="5" min="1" max="10" class="w-full bg-black/30 text-white text-xs p-1 rounded border border-white/10" id="in-bheart" onchange="updateSimState('bHeart', this.value)"></div>
+                    <div><span class="text-[9px] text-white">Flair</span> <input type="number" value="5" min="1" max="10" class="w-full bg-black/30 text-white text-xs p-1 rounded border border-white/10" id="in-bflair" onchange="updateSimState('bFlair', this.value)"></div>
+                </div>
+            </div>
+            
+            <!-- Trait Sliders -->
+            <div class="pt-4 border-t border-white/10">
+                <h4 class="text-[10px] font-bold text-purple-200 mb-2">Shadow Traits</h4>
+                <div class="space-y-3">
+                    <div>
+                        <div class="flex justify-between text-[8px] text-white uppercase"><span>Masc</span><span>Fem</span></div>
+                        <input type="range" min="0" max="100" value="50" class="w-full" oninput="updateTrait('pres', this.value)">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[8px] text-white uppercase"><span>Voyeur</span><span>Exhib</span></div>
+                        <input type="range" min="0" max="100" value="50" class="w-full" oninput="updateTrait('gaze', this.value)">
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-[8px] text-white uppercase"><span>Sub</span><span>Dom</span></div>
+                        <input type="range" min="0" max="100" value="50" class="w-full" oninput="updateTrait('power', this.value)">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN MENU MODAL -->
+    <div id="main-menu-modal" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-[#2e1065]/95 backdrop-blur-xl border border-pink-500/50 rounded-3xl w-[400px] p-8 shadow-[0_0_50px_rgba(236,72,153,0.4)] transform scale-95 transition-transform duration-300" id="menu-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-title font-black text-white">SYSTEM SETTINGS</h2>
+                <button onclick="toggleMainMenu(false)" class="text-white/50 hover:text-white transition text-xl"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="space-y-6">
+                <div class="bg-black/30 p-4 rounded-xl border border-white/10">
+                    <label class="text-[10px] font-bold text-pink-300 uppercase tracking-widest mb-2 block">API Connection (OpenAI/Gemini)</label>
+                    <div class="relative">
+                        <input type="password" id="api-key-input" class="w-full bg-black/50 text-white text-xs px-4 py-3 rounded-lg border border-white/20 focus:border-pink-500 focus:outline-none transition" placeholder="sk-...">
+                        <button onclick="saveApiKey()" class="absolute right-2 top-2 text-[10px] bg-pink-500 text-white px-3 py-1 rounded hover:bg-pink-400 transition">SAVE</button>
+                    </div>
+                    <div class="flex justify-between mt-2">
+                        <span id="key-status" class="text-[9px] text-white/40 italic">No key loaded</span>
+                        <button onclick="clearApiKey()" class="text-[9px] text-red-400 hover:text-white underline">Clear Key</button>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <button class="w-full bg-white/5 hover:bg-white/10 text-left px-4 py-3 rounded-xl text-xs font-bold text-white flex justify-between items-center transition">
+                        <span>Reset Simulation</span>
+                        <i class="fas fa-redo text-white/30"></i>
+                    </button>
+                    <button class="w-full bg-white/5 hover:bg-white/10 text-left px-4 py-3 rounded-xl text-xs font-bold text-white flex justify-between items-center transition">
+                        <span>Download Log</span>
+                        <i class="fas fa-download text-white/30"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <div class="text-[9px] text-white/20 font-mono">V7.4.2 - DELILAH ENGINE</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAP MODAL -->
+    <div id="map-modal" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="relative bg-black border border-pink-500/50 rounded-xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300 max-w-[90vw] max-h-[90vh] w-[1000px] h-[600px]" id="map-content">
+            <button onclick="toggleMap(false)" class="absolute top-4 right-4 bg-black/50 text-white hover:text-pink-400 transition text-2xl z-50 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md"><i class="fas fa-times"></i></button>
+            
+            <!-- Map Image -->
+            <img src="https://i.redd.it/b2h8i9wyth3g1.png" alt="World Map" class="w-full h-full object-contain block absolute inset-0">
+            
+            <!-- Interaction Layer (Invisible Grid) -->
+            <div class="absolute inset-0 z-20">
+                <!-- 2. Mitch (Left Red) -->
+                <div onclick="travelTo('loc_mitch_living')" class="map-hotspot w-[6.5%] h-[12%] top-[0%] left-[0%]">
+                    <span class="hotspot-label">Mitch's</span>
+                </div>
+                <!-- 1. Home (Center Green) -->
+                <div onclick="travelTo('loc_lily_bedroom')" class="map-hotspot w-[5%] h-[12%] top-[0%] left-[6.5%]">
+                    <span class="hotspot-label">Home</span>
+                </div>
+                <!-- 3. Ashley (Right Blue) -->
+                <div onclick="travelTo('loc_ashley_living')" class="map-hotspot w-[6.5%] h-[12%] top-[0%] left-[11.5%]">
+                    <span class="hotspot-label">Ashley's</span>
+                </div>
+
+                <!-- 8. Diner (Top Center Orange) -->
+                <div onclick="travelTo('loc_diner_counter')" class="map-hotspot w-[18%] h-[12%] top-[0%] left-[27%]">
+                    <span class="hotspot-label">Diner</span>
+                </div>
+                
+                <!-- 9. Apartments (Top Right Green) -->
+                <div onclick="travelTo('loc_apt_lobby')" class="map-hotspot w-[28%] h-[12%] top-[0%] left-[56%]">
+                    <span class="hotspot-label">Apartments</span>
+                </div>
+                
+                <!-- 20. Lake (Far Right Red) -->
+                <div onclick="travelTo('loc_lake_shore')" class="map-hotspot w-[16%] h-[30%] top-[0%] left-[84%]">
+                    <span class="hotspot-label">Lake</span>
+                </div>
+                
+                <!-- 18. General Store (Left Big Red) -->
+                <div onclick="travelTo('loc_store_registers')" class="map-hotspot w-[22%] h-[32%] top-[18%] left-[0%]">
+                    <span class="hotspot-label">General Store</span>
+                </div>
+                
+                <!-- 4. Coffee Shop (Center Small Red) -->
+                <div onclick="travelTo('loc_coffee_cashier')" class="map-hotspot w-[10%] h-[15%] top-[18%] left-[33%]">
+                    <span class="hotspot-label">Coffee Shop</span>
+                </div>
+                
+                <!-- 15. Academics (University Top Blue) -->
+                <div onclick="travelTo('loc_uni_biz_class')" class="map-hotspot w-[24%] h-[12%] top-[18%] left-[56%]">
+                    <span class="hotspot-label">Academics</span>
+                </div>
+                <!-- 16. Wrestling (University Mid Green) -->
+                <div onclick="travelTo('loc_wrestle_mats')" class="map-hotspot w-[14%] h-[8%] top-[30%] left-[66%]">
+                    <span class="hotspot-label">Wrestling</span>
+                </div>
+                <!-- 17. Cheer (University Bot Red) -->
+                <div onclick="travelTo('loc_cheer_quad')" class="map-hotspot w-[14%] h-[8%] top-[38%] left-[66%]">
+                    <span class="hotspot-label">Cheer</span>
+                </div>
+                
+                <!-- 19. Park (Right Mid Orange) -->
+                <div onclick="travelTo('loc_park_main')" class="map-hotspot w-[16%] h-[25%] top-[30%] left-[84%]">
+                    <span class="hotspot-label">Park</span>
+                </div>
+                
+                <!-- 11. Gym (Left Mid Green) -->
+                <div onclick="travelTo('loc_gym_floor')" class="map-hotspot w-[15%] h-[18%] top-[52%] left-[0%]">
+                    <span class="hotspot-label">Gym</span>
+                </div>
+                <!-- 12. Pool (Bottom Left Blue) -->
+                <div onclick="travelTo('loc_pool_main')" class="map-hotspot w-[15%] h-[30%] top-[70%] left-[0%]">
+                    <span class="hotspot-label">Pool</span>
+                </div>
+                
+                <!-- 5. Boutique (Center Left Red) -->
+                <div onclick="travelTo('loc_boutique_floor')" class="map-hotspot w-[17%] h-[22%] top-[58%] left-[18%]">
+                    <span class="hotspot-label">Boutique</span>
+                </div>
+                <!-- 13. Pawn (Below Boutique Green) -->
+                <div onclick="travelTo('loc_pawn_counter')" class="map-hotspot w-[17%] h-[10%] top-[80%] left-[18%]">
+                    <span class="hotspot-label">Pawn Shop</span>
+                </div>
+                
+                <!-- 14. Theater (Center Blue) -->
+                <div onclick="travelTo('loc_theater_lobby')" class="map-hotspot w-[20%] h-[12%] top-[58%] left-[35%]">
+                    <span class="hotspot-label">Theater</span>
+                </div>
+                
+                <!-- 6. Bar (Center Right Orange) -->
+                <div onclick="travelTo('loc_bar_main')" class="map-hotspot w-[15%] h-[15%] top-[58%] left-[58%]">
+                    <span class="hotspot-label">Bar</span>
+                </div>
+                
+                <!-- 21. Factory (Bottom Right Blue) -->
+                <div onclick="travelTo('loc_factory_floor')" class="map-hotspot w-[25%] h-[42%] top-[58%] left-[75%]">
+                    <span class="hotspot-label">Factory</span>
+                </div>
+                
+                <!-- 7. Nightclub (Bottom Center Green) -->
+                <div onclick="travelTo('loc_club_bar')" class="map-hotspot w-[19%] h-[20%] top-[80%] left-[39%]">
+                    <span class="hotspot-label">Nightclub</span>
+                </div>
+                
+                <!-- 10. Laundromat (Bottom Right Red) -->
+                <div onclick="travelTo('loc_laundry_machines')" class="map-hotspot w-[17%] h-[10%] top-[90%] left-[58%]">
+                    <span class="hotspot-label">Laundromat</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTS ---
+        const INTENTS = ["ENGAGE", "ACT", "DEFLECT", "OBSERVE", "PROVOKE", "SOOTHE", "CHARM"];
+        const INTENT_DESC = {
+            "ENGAGE": "Initiate contact. Open channel.",
+            "ACT": "Physical agency. Silence/Touch.",
+            "DEFLECT": "Avoid topic. Hide information.",
+            "OBSERVE": "Gather intel. Watch pattern.",
+            "PROVOKE": "Elicit reaction. Shake frame.",
+            "SOOTHE": "De-escalate. Lower defenses.",
+            "CHARM": "Increase Affinity. Flirt."
+        };
+        const STANCES = ["AWKWARD", "STOIC", "SINCERE", "ELEGANT", "SHARP", "BOLD"];
+        const STANCE_DESC = {
+            "AWKWARD": "Fumbling, uncalibrated (Low Sync)",
+            "STOIC": "Unresponsive, grounded (Will)",
+            "SINCERE": "Honest, vulnerable (Heart)",
+            "ELEGANT": "Poised, formal (Grace)",
+            "SHARP": "Sarcastic, cutting (Wit)",
+            "BOLD": "Flashy, center-stage (Flair)"
+        };
+
+        // --- WORLD DATABASE (V7_World_Data_v04.json) ---
+        const WORLD_DB = {
+  "gameTitle": "Lily's Life",
+  "version": "7.4",
+  "hubs": [
+    {
+      "id": "hub_lily_residence",
+      "name": "Lily’s Residence",
+      "archetype": "The Sanctuary",
+      "tags": [
+        "SAFE_ZONE",
+        "PRIVATE",
+        "TEMP_CONTROLLED",
+        "COMFORT"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_lily_bedroom",
+          "name": "Lily Bedroom",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "Safety incarnate. Nothing bad can happen here. The ultimate place for Lily to just break down her barriers and be herself. A golden glow fills the room during the day, and a cool moonlight in the evening. The queen-sized bed is probably the most comfortable thing in the world.",
+          "tags": [],
+          "objects": []
+        },
+        {
+          "id": "loc_lily_closet",
+          "name": "Lily Closet",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [],
+          "objects": []
+        },
+        {
+          "id": "loc_lily_bathroom",
+          "name": "Lily Bathroom",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [],
+          "objects": []
+        },
+        {
+          "id": "loc_lily_kitchen",
+          "name": "Lily Kitchen",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [],
+          "objects": []
+        },
+        {
+          "id": "loc_lily_living",
+          "name": "Lily Living Room",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_mitch_residence",
+      "name": "Mitch’s Residence",
+      "archetype": "The Bear's Den",
+      "tags": [
+        "SAFE_ZONE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_mitch_kitchen",
+          "name": "Mitch Kitchen",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "COMFORT",
+            "FOOD_SOURCE",
+            "ALCOHOL"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_mitch_living",
+          "name": "Mitch Living Room",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "COMFORT",
+            "ALCOHOL"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_mitch_bedroom",
+          "name": "Mitch Bedroom",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "MASCULINE_SPACE",
+            "COMFORT",
+            "ALCOHOL",
+            "HUMMINGBIRD"
+          ],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_ashley_residence",
+      "name": "Ashley’s Residence",
+      "archetype": "The Digital Nest",
+      "tags": [
+        "SAFE_ZONE",
+        "CHAOTIC"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_ashley_living",
+          "name": "Ashley Living Room",
+          "thermal": "",
+          "visibility": 10,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "COMFORT"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_ashley_bedroom",
+          "name": "Ashley Bedroom",
+          "thermal": "",
+          "visibility": 15,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "WARDROBE_UI",
+            "MIRROR_CHECK",
+            "HUMMINGBIRD"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_ashley_stream_zone",
+          "name": "Ashley Stream Zone",
+          "thermal": "",
+          "visibility": 83,
+          "desc": "",
+          "tags": [
+            "EXPOSED_PRIVATE",
+            "TEMP_CONTROLLED",
+            "WORK_ZONE",
+            "COMMERCE",
+            "ENTERTAINMENT",
+            "HUMMINGBIRD"
+          ],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_coffee_shop",
+      "name": "Sleepy Sandra’s (Coffee Shop)",
+      "archetype": "Social Hub",
+      "tags": [
+        "PUBLIC_SPACE",
+        "COMMERCE",
+        "CAFFEINE_HUB"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_coffee_cashier",
+          "name": "Coffee Cashier",
+          "thermal": "75",
+          "visibility": 50,
+          "desc": "The central nervous system of the town's central nervous system. The Baristas are expected to be fast, courteous, and correct. The smell of fancy and exotic espresso is thick in the air and the hissing sounds of steamed milk are nearly constant. A place, not just to work but to order as well.",
+          "tags": [
+            "SAFE_ZONE",
+            "TEMP_CONTROLLED",
+            "NOISE_POLLUTION",
+            "CROWDED",
+            "SLIP_RISK",
+            "WORK_ZONE",
+            "FOOD_SOURCE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_coffee_office",
+          "name": "Coffee Managers Office",
+          "tags": [
+            "STAFF_ONLY",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "WORK_ZONE"
+          ],
+          "thermal": "",
+          "visibility": 38,
+          "desc": "Veronica's Office is a mess of paperwork and used to-go containers. She manages to do a tightrope walk every month to keep this shift afloat. She wants to be her sweet natured self, but here in this office, she's the boss.",
+          "objects": []
+        },
+        {
+          "id": "loc_coffee_tables",
+          "name": "Coffee Tables",
+          "thermal": "77",
+          "visibility": 63,
+          "desc": "The tables are always clean, but somehow also always very sticky. The regulars of Sandra's can often be found congregating here, socializing or people watching. Most times of the day you can find a card game going on.",
+          "tags": [
+            "NOISE_POLLUTION",
+            "CROWDED",
+            "SLIP_RISK",
+            "JUDGMENT_ZONE",
+            "WORK_ZONE",
+            "FOOD_SOURCE",
+            "ENTERTAINMENT"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_coffee_basement",
+          "name": "Coffee Basement",
+          "tags": [
+            "STAFF_ONLY",
+            "DARK",
+            "ISOLATED",
+            "WORK_ZONE"
+          ],
+          "thermal": "60",
+          "visibility": 0,
+          "desc": "It's cold and poorly lit down here. The walls are lined with shelves and the corner is littered in boxes. Probably nothing of interest here, just a boring and cold place to work...unless Jax is down here, he always makes it interesting.",
+          "objects": []
+        },
+        {
+          "id": "loc_coffee_roof",
+          "name": "Coffee Roof",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "It's....it's beautiful. The roof offers glorious views of the lake, the park, and the rest of the town. Depending on the time of day it may be quite cold or windy, and it's always miserable in the rain. However it is a secret spot that only a few locals know, and now you're one of them!",
+          "tags": [
+            "AUTHORIZED",
+            "SAFE_ZONE",
+            "OUTDOOR",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "COMFORT"
+          ],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_boutique",
+      "name": "Whole New U (Boutique)",
+      "archetype": "Retail / Transformation",
+      "tags": [
+        "PUBLIC_SPACE",
+        "COMMERCE",
+        "JUDGMENT_ZONE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_boutique_floor",
+          "name": "Boutique Main Floor",
+          "thermal": "",
+          "visibility": 35,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_boutique_cashier",
+          "name": "Boutique Cashier",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [],
+          "objects": []
+        },
+        {
+          "id": "loc_boutique_fitting",
+          "name": "Boutique Fitting Rooms",
+          "tags": [
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "FITTING_ROOM"
+          ],
+          "thermal": "63",
+          "visibility": 31,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_boutique_office",
+          "name": "Boutique Back Office",
+          "tags": [
+            "STAFF_ONLY",
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 7,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_bar",
+      "name": "Sins of the Flesh (Bar)",
+      "archetype": "Dive Bar",
+      "tags": [
+        "PUBLIC_SPACE",
+        "ALCOHOL",
+        "SHADY"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_bar_entrance",
+          "name": "Bar Entrance",
+          "thermal": "",
+          "visibility": 40,
+          "desc": "",
+          "tags": [
+            "OUTDOOR"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_bar_main",
+          "name": "Bar Bar",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "JUDGMENT_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_bar_pool",
+          "name": "Bar Pool Table",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "FLIRTY_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_bar_bathroom",
+          "name": "Bar Bathroom",
+          "tags": [
+            "RESTROOM"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_bar_alley",
+          "name": "Bar Alley",
+          "tags": [
+            "DARK",
+            "DANGEROUS"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_nightclub",
+      "name": "Shut Up & Dance (Nightclub)",
+      "archetype": "High Energy Club",
+      "tags": [],
+      "subLocations": [
+        {
+          "id": "loc_club_entrance",
+          "name": "Club Entrance",
+          "thermal": "",
+          "visibility": 50,
+          "desc": "",
+          "tags": [
+            "OUTDOOR",
+            "LUXURY",
+            "JUDGMENT_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_club_bar",
+          "name": "Club Bar",
+          "thermal": "",
+          "visibility": 31,
+          "desc": "",
+          "tags": [
+            "NOISE_POLLUTION",
+            "CROWDED",
+            "LUXURY",
+            "ALCOHOL"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_club_floor",
+          "name": "Club Dancefloor",
+          "tags": [
+            "NOISE_POLLUTION",
+            "CROWDED",
+            "SLIP_RISK",
+            "HEAT_EXTREME",
+            "LUXURY",
+            "FLIRTY_ZONE",
+            "DANCING"
+          ],
+          "thermal": "",
+          "visibility": 27,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_club_dj",
+          "name": "Club DJ Booth",
+          "tags": [
+            "AUTHORIZED",
+            "TEMP_CONTROLLED",
+            "NOISE_POLLUTION",
+            "ISOLATED"
+          ],
+          "thermal": "",
+          "visibility": 10,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_club_bathroom",
+          "name": "Club Bathroom",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "RESTROOM"
+          ],
+          "thermal": "",
+          "visibility": 35,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_club_vip",
+          "name": "Club VIP Lounge",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "LUXURY",
+            "VIP_ACCESS"
+          ],
+          "thermal": "",
+          "visibility": 5,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_club_office",
+          "name": "Club Back Office",
+          "tags": [
+            "AUTHORIZED",
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "COMFORT"
+          ],
+          "thermal": "",
+          "visibility": 14,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_diner",
+      "name": "Sizzle n’ Pop (Diner)",
+      "archetype": "Classic Diner",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "FOOD_SOURCE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_diner_counter",
+          "name": "Diner Counter"
+        },
+        {
+          "id": "loc_diner_kitchen",
+          "name": "Diner Kitchen",
+          "tags": [
+            "STAFF_ONLY",
+            "HEAT_EXTREME"
+          ]
+        },
+        {
+          "id": "loc_diner_booths_nice",
+          "name": "Diner Nice Booths"
+        },
+        {
+          "id": "loc_diner_booths_bad",
+          "name": "Diner Crappy Booths"
+        },
+        {
+          "id": "loc_diner_corner",
+          "name": "Diner Corner Booth"
+        },
+        {
+          "id": "loc_diner_dumpster",
+          "name": "Diner Dumpster",
+          "tags": [
+            "DIRTY_ZONE"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hub_apartments",
+      "name": "Lakeside Arms (Apartments)",
+      "archetype": "Residential Block",
+      "tags": [
+        "AUTHORIZED",
+        "TRANSITION_ZONE",
+        "TEMP_CONTROLLED"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_apt_lobby",
+          "name": "Apt Lobby",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "ISOLATED"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_apt_room42",
+          "name": "Apt Room 42",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "CROWDED"
+          ],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_laundromat",
+      "name": "Drop-a-Load (Laundromat)",
+      "archetype": "Service",
+      "tags": [
+        "PUBLIC_SPACE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_laundry_counter",
+          "name": "Laundry Counter"
+        },
+        {
+          "id": "loc_laundry_machines",
+          "name": "Laundry Machines"
+        },
+        {
+          "id": "loc_laundry_office",
+          "name": "Laundry Back Office",
+          "tags": [
+            "STAFF_ONLY"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hub_gym",
+      "name": "Pump It (Gym)",
+      "archetype": "Fitness Center",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "EXERCISE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_gym_entrance",
+          "name": "Gym Entrance"
+        },
+        {
+          "id": "loc_gym_lockers",
+          "name": "Gym Lockers",
+          "tags": [
+            "LOCKER_ROOM"
+          ]
+        },
+        {
+          "id": "loc_gym_showers",
+          "name": "Gym Showers",
+          "tags": [
+            "SHOWER_PUBLIC",
+            "HYDRO"
+          ]
+        },
+        {
+          "id": "loc_gym_floor",
+          "name": "Gym Main Floor"
+        },
+        {
+          "id": "loc_gym_class",
+          "name": "Gym Classroom"
+        },
+        {
+          "id": "loc_gym_sauna",
+          "name": "Gym Sauna",
+          "tags": [
+            "HEAT_EXTREME"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hub_pool",
+      "name": "Splashy Splashy (Pool)",
+      "archetype": "Public Pool",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "SLIP_RISK",
+        "HYDRO"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_pool_lockers",
+          "name": "Pool Lockers",
+          "tags": [
+            "LOCKER_ROOM"
+          ]
+        },
+        {
+          "id": "loc_pool_main",
+          "name": "Pool Pool"
+        },
+        {
+          "id": "loc_pool_deck",
+          "name": "Pool Deck"
+        },
+        {
+          "id": "loc_pool_lifeguard",
+          "name": "Pool Lifeguard Station",
+          "tags": [
+            "STAFF_ONLY"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "hub_pawn_shop",
+      "name": "Sleazy Sally’s Cash 4 Gold",
+      "archetype": "Pawn Shop",
+      "tags": [
+        "LOCKED",
+        "SHADY",
+        "COMMERCE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_pawn_counter",
+          "name": "Pawn Counter",
+          "thermal": "",
+          "visibility": 33,
+          "desc": "",
+          "tags": [
+            "TEMP_CONTROLLED",
+            "JUDGMENT_ZONE",
+            "COMMERCE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_pawn_office",
+          "name": "Pawn Back Office",
+          "tags": [
+            "AUTHORIZED",
+            "EXPOSED_PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "VIP_ACCESS",
+            "COMFORT"
+          ],
+          "thermal": "",
+          "visibility": 75,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_theater",
+      "name": "Flick’s Flixx (Theater)",
+      "archetype": "Cinema",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "DARK",
+        "ENTERTAINMENT"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_theater_lobby",
+          "name": "Theater Lobby",
+          "thermal": "",
+          "visibility": 30,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "TEMP_CONTROLLED",
+            "WORK_ZONE",
+            "FOOD_SOURCE",
+            "RESTROOM"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_theater_screen",
+          "name": "Theater Theater",
+          "thermal": "63",
+          "visibility": 50,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "DARK",
+            "NOISE_POLLUTION",
+            "CROWDED",
+            "FLIRTY_ZONE",
+            "WORK_ZONE",
+            "ENTERTAINMENT"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_theater_projection",
+          "name": "Theater Projection Room",
+          "tags": [
+            "STAFF_ONLY",
+            "AUTHORIZED",
+            "DARK",
+            "ISOLATED",
+            "HUMMINGBIRD",
+            "WORK_ZONE"
+          ],
+          "thermal": "65",
+          "visibility": 4,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_theater_dumpster",
+          "name": "Theater Dumpster",
+          "tags": [
+            "PUBLIC_SPACE",
+            "OUTDOOR",
+            "ISOLATED",
+            "DIRTY_ZONE",
+            "WORK_ZONE"
+          ],
+          "thermal": "",
+          "visibility": 5,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_university_academics",
+      "name": "LLU - Academics",
+      "archetype": "University",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "ACADEMIC"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_uni_art_class",
+          "name": "University Art Class",
+          "thermal": "",
+          "visibility": 31,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "TEMP_CONTROLLED",
+            "ACADEMIC",
+            "FLIRTY_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_uni_office_mcadams",
+          "name": "University Miss McAdams Office",
+          "tags": [
+            "AUTHORIZED",
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 9,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_uni_biz_class",
+          "name": "University Business Class",
+          "thermal": "",
+          "visibility": 19,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "TEMP_CONTROLLED",
+            "CROWDED",
+            "ACADEMIC"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_uni_office_jameson",
+          "name": "University Dr Jamesons Office",
+          "tags": [
+            "AUTHORIZED",
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "ACADEMIC",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 10,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_uni_bathroom",
+          "name": "University Bathroom",
+          "tags": [
+            "PUBLIC_SPACE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "ACADEMIC",
+            "HUMMINGBIRD",
+            "RESTROOM"
+          ],
+          "thermal": "",
+          "visibility": 4,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_uni_janitor",
+          "name": "University Janitors Office",
+          "tags": [
+            "AUTHORIZED",
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "COMFORT",
+            "FOOD_SOURCE",
+            "ALCOHOL",
+            "ENTERTAINMENT",
+            "CRAFTING"
+          ],
+          "thermal": "",
+          "visibility": 2,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_university_wrestling",
+      "name": "LLU - Wrestling",
+      "archetype": "Athletic Dept",
+      "tags": [
+        "LOCKED",
+        "ACADEMIC",
+        "MASCULINE_SPACE",
+        "EXERCISE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_wrestle_office",
+          "name": "Wrestling Coach Madelines Office",
+          "tags": [
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_wrestle_locker",
+          "name": "Wrestling Mens Locker",
+          "tags": [
+            "STAFF_ONLY",
+            "EXPOSED_PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "HIGH_STAKES",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "JUDGMENT_ZONE",
+            "MASCULINE_SPACE",
+            "WORK_ZONE",
+            "LOCKER_ROOM"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_wrestle_mats",
+          "name": "Wrestling Mats",
+          "tags": [
+            "STAFF_ONLY",
+            "SLIP_RISK",
+            "DIRTY_ZONE",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "MASCULINE_SPACE",
+            "WORK_ZONE"
+          ],
+          "thermal": "75",
+          "visibility": 42,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_wrestle_shower",
+          "name": "Wrestling Mens Showers",
+          "tags": [
+            "STAFF_ONLY",
+            "EXPOSED_PRIVATE",
+            "HIGH_STAKES",
+            "SLIP_RISK",
+            "HYDRO",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "JUDGMENT_ZONE",
+            "MASCULINE_SPACE",
+            "WORK_ZONE",
+            "SHOWER_PUBLIC"
+          ],
+          "thermal": "80",
+          "visibility": 95,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_university_cheer",
+      "name": "LLU - Cheer",
+      "archetype": "Athletic Dept",
+      "tags": [
+        "LOCKED",
+        "ACADEMIC",
+        "JUDGMENT_ZONE",
+        "EXERCISE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_cheer_office",
+          "name": "Cheer Coach Bakers Office",
+          "tags": [
+            "PRIVATE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "JUDGMENT_ZONE"
+          ],
+          "thermal": "",
+          "visibility": 15,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_cheer_locker",
+          "name": "Cheer Womens Locker",
+          "tags": [
+            "STAFF_ONLY",
+            "EXPOSED_PRIVATE",
+            "TEMP_CONTROLLED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "JUDGMENT_ZONE",
+            "WORK_ZONE",
+            "LOCKER_ROOM"
+          ],
+          "thermal": "",
+          "visibility": 75,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_cheer_quad",
+          "name": "Cheer Quad",
+          "thermal": "",
+          "visibility": 72,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "OUTDOOR",
+            "CROWDED",
+            "SLIP_RISK",
+            "FLIRTY_ZONE",
+            "JUDGMENT_ZONE",
+            "WORK_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_cheer_mat",
+          "name": "Cheer Mat",
+          "thermal": "77",
+          "visibility": 61,
+          "desc": "",
+          "tags": [
+            "STAFF_ONLY",
+            "SLIP_RISK",
+            "FLIRTY_ZONE",
+            "JUDGMENT_ZONE",
+            "MASCULINE_SPACE",
+            "WORK_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_cheer_shower",
+          "name": "Cheer Womens Shower",
+          "tags": [
+            "STAFF_ONLY",
+            "EXPOSED_PRIVATE",
+            "SLIP_RISK",
+            "HYDRO",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "WORK_ZONE",
+            "SHOWER_PUBLIC"
+          ],
+          "thermal": "80",
+          "visibility": 88,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_general_store",
+      "name": "Nouns (General Store)",
+      "archetype": "Retail",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "COMMERCE"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_store_break",
+          "name": "Store Break Room",
+          "tags": [
+            "STAFF_ONLY",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "WORK_ZONE"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_store_office",
+          "name": "Store Managers Office",
+          "tags": [
+            "STAFF_ONLY",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_store_registers",
+          "name": "Store Registers",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "TEMP_CONTROLLED",
+            "CROWDED",
+            "FLIRTY_ZONE",
+            "WORK_ZONE",
+            "COMMERCE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_store_shelves",
+          "name": "Store Shelves",
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "TEMP_CONTROLLED",
+            "FLIRTY_ZONE",
+            "WORK_ZONE"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_store_stock",
+          "name": "Store Stock Room",
+          "tags": [
+            "STAFF_ONLY",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "WORK_ZONE"
+          ],
+          "thermal": "65",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_park",
+      "name": "Park & Trail",
+      "archetype": "Nature Reserve",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "OUTDOOR"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_park_ranger",
+          "name": "Park Ranger Cabin",
+          "tags": [
+            "SAFE_ZONE",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "COMFORT",
+            "FOOD_SOURCE"
+          ],
+          "thermal": "",
+          "visibility": 5,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_park_main",
+          "name": "Park Park",
+          "thermal": "",
+          "visibility": 22,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "OUTDOOR"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_park_restroom",
+          "name": "Park Restrooms",
+          "tags": [
+            "PUBLIC_SPACE",
+            "ISOLATED",
+            "DIRTY_ZONE",
+            "MIRROR_CHECK",
+            "RESTROOM"
+          ],
+          "thermal": "",
+          "visibility": 12,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_park_trail_light",
+          "name": "Park Light Trail",
+          "thermal": "",
+          "visibility": 17,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "OUTDOOR",
+            "SLIP_RISK"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_park_trail_deep",
+          "name": "Park Deep Trail",
+          "tags": [
+            "OUTDOOR",
+            "ISOLATED",
+            "DANGEROUS",
+            "SLIP_RISK",
+            "DIRTY_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "",
+          "objects": []
+        },
+        {
+          "id": "loc_park_cabin_main",
+          "name": "Park Cabin Main",
+          "thermal": "",
+          "visibility": 5,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_park_cabin_bed",
+          "name": "Park Cabin Bedroom",
+          "thermal": "",
+          "visibility": 21,
+          "desc": "",
+          "tags": [
+            "PUBLIC_SPACE",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_park_view",
+          "name": "Park Viewpoint",
+          "thermal": "",
+          "visibility": 3,
+          "desc": "",
+          "tags": [
+            "OUTDOOR",
+            "ISOLATED",
+            "DANGEROUS",
+            "SLIP_RISK",
+            "COMFORT"
+          ],
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_lake",
+      "name": "Lilith’s Lake",
+      "archetype": "Natural Body of Water",
+      "tags": [
+        "LOCKED",
+        "PUBLIC_SPACE",
+        "OUTDOOR",
+        "HYDRO"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_lake_restroom",
+          "name": "Lake Restrooms",
+          "tags": [
+            "PUBLIC_SPACE",
+            "EXPOSED_PRIVATE",
+            "DARK",
+            "ISOLATED",
+            "DIRTY_ZONE",
+            "HUMMINGBIRD",
+            "MIRROR_CHECK",
+            "RESTROOM",
+            "SHOWER_PUBLIC"
+          ],
+          "thermal": "",
+          "visibility": 11,
+          "desc": "The building may be MADE of mildew. This is one of the grossest places in town. When it's needed though, you'll be happy it's there.",
+          "objects": []
+        },
+        {
+          "id": "loc_lake_shore",
+          "name": "Lake Shores",
+          "thermal": "",
+          "visibility": 35,
+          "desc": "A nice place to hang out on warm, windless days. The bonfire area is a good place for friends or lovers at night.",
+          "tags": [
+            "PUBLIC_SPACE",
+            "OUTDOOR",
+            "SLIP_RISK"
+          ],
+          "objects": []
+        },
+        {
+          "id": "loc_lake_platform",
+          "name": "Lake Platform",
+          "tags": [
+            "SAFE_ZONE",
+            "PUBLIC_SPACE",
+            "OUTDOOR",
+            "ISOLATED",
+            "HYDRO",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "COMFORT",
+            "EXERCISE"
+          ],
+          "thermal": "",
+          "visibility": 12,
+          "desc": "An aged and weathered floating wooden platform, perfect for suntanning, stress-relieving, and even some romance.",
+          "objects": []
+        },
+        {
+          "id": "loc_lake_cove",
+          "name": "Lake Cove",
+          "tags": [
+            "SAFE_ZONE",
+            "PUBLIC_SPACE",
+            "OUTDOOR",
+            "ISOLATED",
+            "HYDRO",
+            "FLIRTY_ZONE",
+            "HUMMINGBIRD",
+            "COMFORT"
+          ],
+          "thermal": "",
+          "visibility": 0,
+          "desc": "A quiet, private, beautiful place to spend time; alone or with someone, the people seem to ground themselves easily here. A local spot, but not a secret one, the townsfolk will let anyone know where it is, but only if they ask the right questions.",
+          "objects": []
+        }
+      ]
+    },
+    {
+      "id": "hub_factory",
+      "name": "The Danger Zone (Factory)",
+      "archetype": "Industrial Zone",
+      "tags": [
+        "LOCKED",
+        "NOISE_POLLUTION",
+        "HIGH_STAKES",
+        "INDUSTRIAL"
+      ],
+      "subLocations": [
+        {
+          "id": "loc_factory_foreman",
+          "name": "Factory Foremans Office",
+          "tags": [
+            "STAFF_ONLY",
+            "TEMP_CONTROLLED",
+            "ISOLATED",
+            "WORK_ZONE"
+          ],
+          "thermal": "",
+          "visibility": 15,
+          "desc": "The only reason to be here is if you want this job, if you don't want this job, or if you no longer get to do this job.",
+          "objects": []
+        },
+        {
+          "id": "loc_factory_security",
+          "name": "Factory Security",
+          "tags": [
+            "STAFF_ONLY",
+            "AUTHORIZED",
+            "DARK",
+            "ISOLATED",
+            "FLIRTY_ZONE",
+            "WORK_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 25,
+          "desc": "Duke's world, and he is the eyes and ears of this institution. It's a nice shift to simply sit back and watch the workers, but she has to do so with him. It's nice there is a camera in here. Duke, however, knows where the button to turn it off.",
+          "objects": []
+        },
+        {
+          "id": "loc_factory_changing",
+          "name": "Factory Changing Room",
+          "tags": [
+            "STAFF_ONLY",
+            "EXPOSED_PRIVATE",
+            "FLIRTY_ZONE",
+            "JUDGMENT_ZONE",
+            "MASCULINE_SPACE",
+            "WORK_ZONE",
+            "LOCKER_ROOM",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "64",
+          "visibility": 88,
+          "desc": "She now realizes why there aren't any women working at the Factory, most people aren't comfortable getting naked while surrounded by cavemen. She'll have to do this every day so she should either get used to it or find some easier work.",
+          "objects": []
+        },
+        {
+          "id": "loc_factory_floor",
+          "name": "Factory Main Floor",
+          "tags": [
+            "STAFF_ONLY",
+            "CROWDED",
+            "DANGEROUS",
+            "SLIP_RISK",
+            "MASCULINE_SPACE",
+            "WORK_ZONE"
+          ],
+          "thermal": "",
+          "visibility": 50,
+          "desc": "So loud she can barely hear her own thoughts, it's nice to not have to hear anyone else's either. She'll get looked at, but nobody could ever do anything out here in the open. It's nice to only have to think about the job, but this job is intricate and will require my attention and energy.",
+          "objects": []
+        },
+        {
+          "id": "loc_factory_boiler",
+          "name": "Factory Boiler Room",
+          "tags": [
+            "STAFF_ONLY",
+            "ISOLATED",
+            "DANGEROUS",
+            "HEAT_EXTREME",
+            "DIRTY_ZONE",
+            "MASCULINE_SPACE",
+            "WORK_ZONE",
+            "HUMMINGBIRD"
+          ],
+          "thermal": "",
+          "visibility": 33,
+          "desc": "HOT. That's all she can think of, unfortunately if she's working with someone, that's all they're going to be thinking. It's a dangerous place to be in such close proximity with the constant feeling of wanting to shed clothes for comfort. Hopefully the shift goes quickly.",
+          "objects": []
+        },
+        {
+          "id": "loc_factory_tunnels",
+          "name": "Factory Service Tunnels",
+          "tags": [
+            "STAFF_ONLY",
+            "DARK",
+            "ISOLATED",
+            "DIRTY_ZONE",
+            "HUMMINGBIRD",
+            "MASCULINE_SPACE",
+            "WORK_ZONE"
+          ],
+          "thermal": "60",
+          "visibility": 25,
+          "desc": "It's cold and dark back here. Without a guide it is stressful, but with a guide it becomes a danger, depending on which of my co-worker is \"helping\" me.",
+          "objects": []
+        },
+        {
+          "id": "loc_factory_showers",
+          "name": "Factory Showers",
+          "tags": [
+            "STAFF_ONLY",
+            "EXPOSED_PRIVATE",
+            "HIGH_STAKES",
+            "SLIP_RISK",
+            "HUMMINGBIRD",
+            "JUDGMENT_ZONE",
+            "WORK_ZONE",
+            "SHOWER_PUBLIC"
+          ],
+          "thermal": "80",
+          "visibility": 95,
+          "desc": "A long day of working this dangerous job can leave one feeling the WORST kind of grimy. The boss was kind enough to provide showers, but not privacy. Those leering, hungry, men will have full access to my naked body here. It's nice to not have to go home dirty, but is it worth it?",
+          "objects": []
+        }
+      ]
+    }
+  ]
+};
+
+        const WARDROBE_DB = [
+            { id: 'u1', name: 'The Void (Commando)', slot: 'undie', cat: 'undie', cost: 0, owned: true, tags: ['EXPOSED','RISKY'], stats: { exp: 0, ins: 0, heat: 0 }, bonus: { flair: 2, grace: -1 }, desc: "Walking onto a battlefield without a shield." },
+            { id: 'u2', name: 'The Relic (Cotton Briefs)', slot: 'undie', cat: 'undie', cost: 10, owned: true, tags: ['SAFE','UNFLATTERING'], stats: { exp: 0, ins: 20, heat: 10 }, bonus: { heart: 1, flair: -2 }, desc: "A shield against desire. Safe but uncool." },
+            { id: 'u4', name: 'The Wire (Lace Thong)', slot: 'undie', cat: 'undie', cost: 20, owned: false, tags: ['SEXY','UNCOMFORTABLE'], stats: { exp: 0, ins: 0, heat: 0 }, bonus: { flair: 1, will: -1 }, desc: "Minimalist engineering. Hyper-aware of hips." },
+            { id: 'b1', name: 'The Void (No Bra)', slot: 'bra', cat: 'bra', cost: 0, owned: true, tags: ['EXPOSED','FREE'], stats: { exp: 0, ins: 0, heat: 0 }, bonus: { flair: 1, grace: -1 }, desc: "Nothing between you and the atmosphere." },
+            { id: 'b3', name: 'The Snare (Push-Up)', slot: 'bra', cat: 'bra', cost: 45, owned: false, tags: ['ENHANCED'], stats: { exp: 0, ins: 20, heat: 40 }, bonus: { flair: 2, heart: -1 }, desc: "You hoist the girls up. Geometry." },
+            { id: 'b7', name: 'The Fortress (Sports Bra)', slot: 'bra', cat: 'bra', cost: 50, owned: false, tags: ['ATHLETIC'], stats: { exp: 0, ins: 30, heat: 20 }, bonus: { will: 2, flair: -1 }, desc: "Industrial engineering for the chest." },
+            { id: 't1', name: 'The Shelter (Flannel)', slot: 'top', cat: 'top', cost: 0, owned: true, tags: ['MASCULINE'], stats: { exp: 10, ins: 60, heat: 40 }, bonus: { heart: 2, flair: -2 }, desc: "Hides the waistline completely." },
+            { id: 't2', name: 'The Gamer (Band Tee)', slot: 'top', cat: 'top', cost: 25, owned: true, tags: ['ANDROGYNOUS'], stats: { exp: 10, ins: 20, heat: 20 }, bonus: { wit: 1 }, desc: "Faded black cotton." },
+            { id: 't3', name: 'The Risk (Tight Henley)', slot: 'top', cat: 'top', cost: 25, owned: false, tags: ['REVEALING'], stats: { exp: 30, ins: 20, heat: 30 }, bonus: { flair: 2, grace: -1 }, desc: "Buttons fighting for their lives." },
+            { id: 'l1', name: 'The Standard (Skinny Jeans)', slot: 'bottom', cat: 'bottom', cost: 40, owned: true, tags: ['BASIC'], stats: { exp: 10, ins: 40, heat: 50 }, bonus: { wit: 1 }, desc: "The Millennial Uniform." },
+            { id: 'l2', name: 'The Cloud (Joggers)', slot: 'bottom', cat: 'bottom', cost: 35, owned: true, tags: ['COMFORT'], stats: { exp: 0, ins: 60, heat: 40 }, bonus: { heart: 2 }, desc: "Soft cotton sanity." },
+            { id: 'l3', name: 'The Cutoff (Daisy Dukes)', slot: 'bottom', cat: 'bottom', cost: 25, owned: false, tags: ['EXPOSED'], stats: { exp: 75, ins: 0, heat: 0 }, bonus: { flair: 3, grace: -1 }, desc: "Sun's out, buns out." },
+            { id: 'f1', name: 'The Rookie (Sundress)', slot: 'full', cat: 'fullbody', cost: 30, owned: false, tags: ['FEMININE'], stats: { exp: 60, ins: 10, heat: 5 }, bonus: { flair: 4, will: -1 }, desc: "Bright polyester optimism. A skirt that flares when you spin." },
+            { id: 'f2', name: 'The Bait (Bodycon)', slot: 'full', cat: 'fullbody', cost: 45, owned: false, tags: ['TIGHT'], stats: { exp: 50, ins: 20, heat: 60 }, bonus: { flair: 4, will: -1 }, desc: "Clings like a second skin. Demands attention." },
+            { id: 'f3', name: 'The Bunker (Hoodie)', slot: 'overlay', cat: 'fullbody', cost: 0, owned: true, tags: ['HIDDEN'], stats: { exp: 0, ins: 60, heat: 40 }, bonus: { heart: 3, flair: -3 }, desc: "Don't Perceive Me field." },
+            { id: 's2', name: 'The Standard (Red Pumps)', slot: 'feet', cat: 'feet', cost: 80, owned: false, tags: ['SEXY'], stats: { exp: 40, ins: 0, heat: 0 }, bonus: { flair: 2, grace: -2, will: 1 }, desc: "Fragile and dangerous. Shifts center of gravity." },
+            { id: 's3', name: 'The Stompers (Combat Boots)', slot: 'feet', cat: 'feet', cost: 120, owned: false, tags: ['TOUGH'], stats: { exp: 0, ins: 60, heat: 50 }, bonus: { will: 3, grace: -1 }, desc: "Laced tight. You feel anchored." }
+        ];
+
+        // STATE
+        let currentTab = 'undie';
+        let equipped = { undie: null, bra: null, top: null, bottom: null, feet: null, overlay: null };
+        let selectedItem = null;
+        let state = {
+            baseStats: { will: 5, grace: 5, heart: 5, flair: 5, wit: 5 },
+            outfitMods: { will: 0, grace: 0, heart: 0, flair: 0, wit: 0 },
+            baseVit: 100, baseComp: 100, baseSync: 50,
+            temp: 65, exp: 20, vis: 10, gaze: 0, power: 0,
+            gameStage: { phase: 1, slot: 1 }, 
+            currentLocation: "Lily's Bedroom",
+            narrativeBeat: 0 // 0=Start, 1=Mid, 2=End
+        };
+        let matrixState = { intent: 0, stance: 2 };
+        let unlockAll = false;
+
+        // --- INIT ---
+        window.onload = () => {
+            setTab('undie');
+            updateSim(); 
+            renderLoadout();
+            initMatrix();
+            checkApiKey(); 
+            updateNarrativeButtons();
+            renderIntro(); // PHASE 0: AUTO-FIRE
+        };
+
+        function renderIntro() {
+            const log = document.getElementById('matrix-log');
+            const introText = `Darkness. The sound of your own breathing. You wake up expecting the heavy, dense feeling of "Eli"—the broad shoulders, the weight of the body you’ve inhabited for years. Instead, you feel... light. Wrong.\n\nYou stumble to the bathroom mirror. The face looking back isn't yours. It's *hers*.\n\n> SELECT A STANCE TO DEFINE YOUR REACTION...`;
+            
+            const entry = document.createElement('div');
+            entry.className = "p-3 bg-white/5 border-l-2 border-pink-500 rounded-r mb-2 text-[10px] text-pink-100 leading-relaxed typewriter-text";
+            entry.innerText = introText;
+            log.appendChild(entry);
+        }
+
+        function toggleUnlockAll() {
+            unlockAll = document.getElementById('toggle-unlock').checked;
+            const activeBtn = document.querySelector('.btn-glass.active');
+            if (activeBtn) setTab(activeBtn.innerText.toLowerCase() === 'shoes' ? 'feet' : activeBtn.innerText.toLowerCase());
+        }
+
+        function toggleMap(show) {
+            const el = document.getElementById('map-modal');
+            if (show) {
+                el.classList.remove('hidden');
+                void el.offsetWidth; 
+                el.children[0].classList.remove('scale-95');
+                el.classList.remove('opacity-0');
+            } else {
+                el.children[0].classList.add('scale-95');
+                el.classList.add('opacity-0');
+                setTimeout(() => el.classList.add('hidden'), 300);
+            }
+        }
+
+        function findLocation(id) {
+            // Helper to find loc details in WORLD_DB
+            for(let h of WORLD_DB.hubs) {
+                if(h.id === id) return h; // Or handle hubs vs sublocs differently
+                for(let s of h.subLocations) {
+                    if(s.id === id) return s;
+                }
+            }
+            return null;
+        }
+
+        function travelTo(id) {
+            // Look up location details
+            const locData = findLocation(id);
+            const locName = locData ? locData.name : id;
+            
+            state.currentLocation = locName;
+            state.narrativeBeat = 0;
+            toggleMap(false);
+            
+            const log = document.getElementById('matrix-log');
+            const entry = document.createElement('div');
+            entry.className = "p-3 bg-blue-500/10 border-l-2 border-blue-500 rounded-r mb-2 text-[10px] text-blue-200 typewriter-text";
+            entry.innerText = `> Traveling to: ${locName}...`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+            
+            // Update Environment if data exists
+            if(locData) {
+                if(locData.thermal) state.temp = parseInt(locData.thermal);
+                if(locData.visibility !== undefined) state.vis = parseInt(locData.visibility);
+                updateSim(); // Refresh HUD with new environment data
+            }
+            
+            updateNarrativeButtons();
+            if(state.gameStage.phase === 1) state.gameStage.phase = 2; 
+        }
+
+        function toggleMainMenu(show) {
+            const el = document.getElementById('main-menu-modal');
+            const content = document.getElementById('menu-content');
+            if(show) {
+                el.classList.remove('hidden');
+                void el.offsetWidth;
+                el.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            } else {
+                el.classList.add('opacity-0');
+                content.classList.add('scale-95');
+                setTimeout(() => el.classList.add('hidden'), 300);
+            }
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('api-key-input').value;
+            if(key.length > 10) {
+                sessionStorage.setItem('v7_api_key', key);
+                document.getElementById('key-status').innerHTML = '<span class="text-green-400">Key Active (Session)</span>';
+                document.getElementById('api-key-input').value = '';
+                document.getElementById('api-status').innerHTML = '<i class="fas fa-circle text-[6px] mr-1 text-green-400"></i> Online';
+                document.getElementById('api-status').classList.add('border-green-500/50');
+            }
+        }
+
+        function checkApiKey() {
+            const key = sessionStorage.getItem('v7_api_key');
+            if(key) {
+                document.getElementById('key-status').innerHTML = '<span class="text-green-400">Key Active (Session)</span>';
+                document.getElementById('api-status').innerHTML = '<i class="fas fa-circle text-[6px] mr-1 text-green-400"></i> Online';
+                document.getElementById('api-status').classList.add('border-green-500/50');
+            }
+        }
+
+        function clearApiKey() {
+            sessionStorage.removeItem('v7_api_key');
+            document.getElementById('key-status').innerHTML = '<span class="text-white/40">No key loaded</span>';
+            document.getElementById('api-status').innerHTML = '<i class="fas fa-circle text-[6px] mr-1"></i> Offline';
+            document.getElementById('api-status').classList.remove('border-green-500/50');
+        }
+
+        function updateSim() {
+            // Read Dev Panel inputs only if user interacted? 
+            // Actually, state is source of truth. We update HUD from state.
+            // If Dev panel changes, it calls updateSimState -> updates State -> calls updateSim -> updates HUD.
+            // Here we just refresh UI from state.
+            
+            // Update Shadow Labels
+            const gazeVal = state.gaze;
+            document.getElementById('lbl-gaze').innerText = gazeVal < -10 ? "Voyeur" : (gazeVal > 10 ? "Exhibitionist" : "Neutral");
+            const powerVal = state.power;
+            document.getElementById('lbl-power').innerText = powerVal < -10 ? "Submissive" : (powerVal > 10 ? "Dominant" : "Neutral");
+
+            // Update Labels
+            document.getElementById('lbl-bwill').innerText = state.baseStats.will;
+            document.getElementById('lbl-bgrace').innerText = state.baseStats.grace;
+            document.getElementById('lbl-bheart').innerText = state.baseStats.heart;
+            document.getElementById('lbl-bflair').innerText = state.baseStats.flair;
+            document.getElementById('lbl-bwit').innerText = state.baseStats.wit;
+            
+            // Update Inputs to match state (two-way binding)
+            document.getElementById('in-vit').value = state.baseVit;
+            document.getElementById('in-comp').value = state.baseComp;
+            
+            renderFinalStats();
+        }
+
+        function updateSimState(key, val) {
+            if(key) {
+                if(key.startsWith('b')) {
+                    const stat = key.substring(1).toLowerCase();
+                    state.baseStats[stat] = parseInt(val);
+                } else {
+                    state[key] = parseInt(val);
+                }
+            }
+            // Specific updates for Dev Panel text
+            if(document.getElementById('lbl-vit')) document.getElementById('lbl-vit').innerText = state.baseVit + '%';
+            if(document.getElementById('lbl-comp')) document.getElementById('lbl-comp').innerText = state.baseComp + '%';
+            
+            // Trigger full refresh
+            updateSim();
+        }
+
+        function updateTrait(type, val) {
+            state[type] = parseInt(val);
+            document.getElementById(`mark-${type}`).style.left = val + '%';
+            updateSim();
+        }
+
+        function calcStats() {
+            let final = { ...state.baseStats };
+            let totalIns = 0, totalExp = 0, totalHeat = 0;
+            let mods = { will:0, grace:0, heart:0, flair:0, wit:0 };
+
+            Object.values(equipped).forEach(item => {
+                if(!item) return;
+                totalIns += item.stats.ins;
+                totalHeat += item.stats.heat;
+                if(item.bonus) {
+                    Object.entries(item.bonus).forEach(([k,v]) => {
+                        mods[k] += v;
+                        final[k] += v;
+                    });
+                }
+            });
+
+            Object.keys(final).forEach(k => { final[k] = Math.max(1, Math.min(10, final[k])); });
+            updatePoly(final);
+            
+            // Calculate Archetype (Simplified for Demo)
+            const maxStat = Object.keys(final).reduce((a, b) => final[a] > final[b] ? a : b);
+            let archName = "THE DEFAULT";
+             if (maxStat === 'flair') archName = "THE HEDONIST";
+             if (maxStat === 'wit') archName = "THE STRATEGIST";
+             if (maxStat === 'will') archName = "THE SURVIVOR"; 
+             if (maxStat === 'heart') archName = "THE EMPATH";
+             if (maxStat === 'grace') archName = "THE PERFORMER";
+            document.getElementById('archetype-name').innerText = archName;
+
+            document.getElementById('sum-ins').innerText = Math.min(100, totalIns);
+            document.getElementById('sum-heat').innerText = Math.min(100, totalHeat);
+            
+            let exp = 0;
+            if(equipped.overlay) exp = 0; 
+            else if (equipped.full) exp = equipped.full.stats.exp;
+            else {
+                let top = equipped.top ? equipped.top.stats.exp : 100;
+                let bot = equipped.bottom ? equipped.bottom.stats.exp : 100;
+                exp = (top + bot) / 2;
+            }
+            document.getElementById('sum-exp').innerText = Math.round(exp) + '%';
+            document.getElementById('total-exposure').innerText = Math.round(exp) + '%';
+            
+            // Update Visuals from Calc
+            state.exp = Math.round(exp); 
+            state.outfitMods = mods;
+
+            const bStr = Object.entries(mods).filter(([k,v]) => v!==0).map(([k,v]) => `${k.toUpperCase()} ${v>0?'+':''}${v}`).join(', ');
+            document.getElementById('sum-bonus').innerText = bStr || "No Bonuses";
+        }
+        
+        function renderFinalStats() {
+            let finalStats = {
+                will: state.baseStats.will + state.outfitMods.will,
+                grace: state.baseStats.grace + state.outfitMods.grace,
+                heart: state.baseStats.heart + state.outfitMods.heart,
+                flair: state.baseStats.flair + state.outfitMods.flair,
+                wit: state.baseStats.wit + state.outfitMods.wit
+            };
+            
+            // Physics modifiers
+            if (state.baseVit < 30) { finalStats.will -= 2; finalStats.flair -= 3; }
+            if (state.baseComp < 30) { finalStats.wit -= 2; finalStats.grace -= 2; }
+            if (state.vis > 70) finalStats.flair += 2;
+
+             // Clamp
+            Object.keys(finalStats).forEach(k => {
+                if(finalStats[k] > 10) finalStats[k] = 10;
+                if(finalStats[k] < 1) finalStats[k] = 1;
+            });
+            
+            // Update Pentagram with FINAL stats
+            updatePentagram([finalStats.will, finalStats.grace, finalStats.heart, finalStats.flair, finalStats.wit]);
+            
+            // Update Bars
+            document.getElementById('val-vitality').innerText = state.baseVit + "%";
+            document.getElementById('bar-vitality').style.width = state.baseVit + "%";
+            document.getElementById('val-composure').innerText = state.baseComp + "%";
+            document.getElementById('bar-composure').style.width = state.baseComp + "%";
+            document.getElementById('val-sync').innerText = state.baseSync + "%";
+            document.getElementById('bar-sync').style.width = state.baseSync + "%";
+
+            // Update Thermo
+            let thermoPct = Math.min(100, Math.max(0, (state.temp / 110) * 100));
+            document.getElementById('temp-indicator').style.bottom = thermoPct + '%';
+            document.getElementById('temp-text').innerText = state.temp + '°F';
+            
+            updateAesthetics(state.gaze, state.power);
+        }
+
+        function updateAesthetics(gaze, power) {
+            const root = document.documentElement;
+            const pNorm = (parseInt(power) + 50) / 100; 
+            const newHue = 320 - (pNorm * 120);
+            root.style.setProperty('--main-hue', newHue);
+            const gMod = parseInt(gaze); 
+            const l1 = Math.max(2, Math.min(30, 10 + (gMod * 0.3)));
+            const l2 = Math.max(15, Math.min(70, 40 + (gMod * 0.5)));
+            root.style.setProperty('--bg-lightness-1', l1 + '%');
+            root.style.setProperty('--bg-lightness-2', l2 + '%');
+            const eye = document.getElementById('eye-icon');
+            if(eye) eye.style.stroke = `hsl(${newHue}, 100%, 60%)`;
+        }
+
+        function updatePoly(stats) {
+            const scale = 3;
+            const p1 = [50, 50 - (stats[0] * scale)];
+            const p2 = [50 + (stats[1] * scale * 0.95), 50 - (stats[1] * scale * 0.3)];
+            const p3 = [50 + (stats[2] * scale * 0.6), 50 + (stats[2] * scale * 0.8)];
+            const p4 = [50 - (stats[3] * scale * 0.6), 50 + (stats[3] * scale * 0.8)];
+            const p5 = [50 - (stats[4] * scale * 0.95), 50 - (stats[4] * scale * 0.3)];
+            document.getElementById('stat-poly').setAttribute('points', `${p1[0]},${p1[1]} ${p2[0]},${p2[1]} ${p3[0]},${p3[1]} ${p4[0]},${p4[1]} ${p5[0]},${p5[1]}`);
+        }
+
+        // --- WARDROBE UI (Standard) ---
+        function setTab(cat) {
+            currentTab = cat;
+            document.querySelectorAll('.btn-glass').forEach(b => b.classList.remove('active'));
+            const buttons = document.querySelectorAll('.btn-glass');
+            buttons.forEach(btn => {
+                if (btn.innerText.toLowerCase().includes(cat.substr(0,3))) btn.classList.add('active');
+            });
+            renderItemList();
+        }
+
+        function renderItemList() {
+            const container = document.getElementById('item-list');
+            container.innerHTML = '';
+            const sortMode = document.getElementById('sort-select').value;
+            let items = WARDROBE_DB.filter(i => i.cat === currentTab);
+            
+            if(sortMode === 'name') items.sort((a,b) => a.name.localeCompare(b.name));
+            if(sortMode === 'value') items.sort((a,b) => b.cost - a.cost);
+            if(sortMode === 'heat') items.sort((a,b) => b.stats.ins - a.stats.ins);
+            if(sortMode === 'expose') items.sort((a,b) => b.stats.exp - a.stats.exp);
+
+            items.forEach(item => {
+                if (!unlockAll && !item.owned) return;
+                const el = document.createElement('div');
+                el.className = `p-2 rounded border border-white/10 bg-white/5 hover:bg-white/10 cursor-pointer transition flex justify-between items-center group ${isEquipped(item) ? 'border-l-2 border-l-pink-500 bg-white/10' : ''}`;
+                if (!item.owned) el.style.opacity = "0.6"; 
+                
+                el.onclick = () => showInspector(item);
+                el.innerHTML = `
+                    <div class="font-bold text-[10px] text-white group-hover:text-pink-200">${item.name} ${!item.owned ? '<i class="fas fa-lock text-[8px] ml-1 opacity-50"></i>' : ''}</div>
+                    <div class="text-[8px] text-pink-300/70">$${item.cost}</div>
+                `;
+                container.appendChild(el);
+            });
+        }
+
+        function showInspector(item) {
+            const isEq = isEquipped(item);
+            const insp = document.getElementById('inspector');
+            insp.classList.remove('hidden');
+            insp.innerHTML = `
+                <div class="text-sm font-bold text-pink-300 mb-1">${item.name}</div>
+                <div class="flex gap-2 justify-center mb-2 flex-wrap">
+                    ${item.tags.map(t => `<span class="text-[8px] bg-white/10 px-2 py-0.5 rounded-full text-white/80">${t}</span>`).join('')}
+                </div>
+                <div class="text-[10px] text-pink-100/60 italic mb-3 leading-tight">"${item.desc}"</div>
+                <div class="grid grid-cols-3 gap-2 w-full text-[9px] mb-3 bg-black/20 p-2 rounded-lg">
+                    <div>INS: <span class="text-white font-bold">${item.stats.ins}</span></div>
+                    <div>EXP: <span class="text-white font-bold">${item.stats.exp}%</span></div>
+                    <div>HEAT: <span class="text-white font-bold">${item.stats.heat}</span></div>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="document.getElementById('inspector').classList.add('hidden')" class="flex-1 bg-white/10 text-white/50 hover:text-white py-2 rounded text-[10px] transition">CANCEL</button>
+                    <button onclick="toggleEquip('${item.id}')" class="flex-1 btn-gem py-2 text-[10px]">${isEq ? 'UNEQUIP' : 'EQUIP'}</button>
+                </div>
+            `;
+        }
+
+        function isEquipped(item) {
+            if (item.slot === 'full') return equipped.top && equipped.top.id === item.id;
+            return equipped[item.slot] && equipped[item.slot].id === item.id;
+        }
+
+        function toggleEquip(id) {
+            const item = WARDROBE_DB.find(i => i.id === id);
+            if (!item) return;
+            if (isEquipped(item)) {
+                if(item.slot === 'full') equipped.top = null;
+                else equipped[item.slot] = null;
+            } else {
+                if (item.slot === 'full') { equipped.top = item; equipped.bottom = null; }
+                else if (item.slot === 'top') { if(equipped.top && equipped.top.slot === 'full') equipped.top = item; else equipped.top = item; }
+                else if (item.slot === 'bottom') { if(equipped.top && equipped.top.slot === 'full') { equipped.top = null; equipped.bottom = item; } else equipped.bottom = item; }
+                else equipped[item.slot] = item;
+            }
+            document.getElementById('inspector').classList.add('hidden');
+            renderMiniSlots();
+            calcStats();
+            const activeBtn = document.querySelector('.btn-glass.active');
+            if(activeBtn) {
+                const currentCat = activeBtn.getAttribute('onclick').match(/'([^']+)'/)[1];
+                setTab(currentCat);
+            }
+        }
+
+        function renderMiniSlots() {
+            const slots = ['overlay', 'top', 'bottom', 'bra', 'undie', 'feet'];
+            const container = document.getElementById('slots-mini-container');
+            container.innerHTML = '';
+            slots.forEach(slot => {
+                const item = equipped[slot];
+                const isCovered = slot === 'bottom' && equipped.top && equipped.top.slot === 'full';
+                let name = item ? item.name : 'Empty';
+                let style = item ? 'text-white font-bold' : 'text-white/20 italic';
+                if(isCovered) { name = "(Covered)"; style="text-white/30"; }
+                const el = document.createElement('div');
+                el.className = "flex justify-between items-center bg-white/5 px-2 py-1 rounded border border-white/5";
+                el.innerHTML = `<span class="text-[8px] uppercase text-pink-300/50 w-10">${slot.substr(0,3)}</span><span class="text-[9px] truncate ${style}">${name}</span>`;
+                container.appendChild(el);
+            });
+        }
+
+        function renderLoadout() { renderMiniSlots(); }
+
+        // --- MATRIX UI ---
+        function initMatrix() {
+            const svg = document.getElementById('intent-wheel');
+            const count = INTENTS.length;
+            const r = 50; const cx = 50; const cy = 50;
+            
+            INTENTS.forEach((intent, i) => {
+                const a1 = (i * 360 / count) * Math.PI / 180;
+                const a2 = ((i + 1) * 360 / count) * Math.PI / 180;
+                const x1 = cx + r * Math.cos(a1);
+                const y1 = cy + r * Math.sin(a1);
+                const x2 = cx + r * Math.cos(a2);
+                const y2 = cy + r * Math.sin(a2);
+                
+                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                path.setAttribute("d", `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`);
+                path.setAttribute("fill", "rgba(255,255,255,0.05)");
+                path.setAttribute("stroke", "rgba(255,255,255,0.1)");
+                path.setAttribute("stroke-width", "0.5");
+                path.setAttribute("class", "cursor-pointer transition-all hover:fill-pink-500/40 hover:stroke-white");
+                path.onclick = () => selectIntent(i, path);
+                svg.appendChild(path);
+
+                const midAngle = a1 + (a2 - a1) / 2;
+                const textR = r * 0.72;
+                const tx = cx + textR * Math.cos(midAngle);
+                const ty = cy + textR * Math.sin(midAngle);
+                const rotateAngle = (midAngle * 180 / Math.PI) + 90;
+
+                const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                text.setAttribute("x", tx); text.setAttribute("y", ty);
+                text.setAttribute("text-anchor", "middle");
+                text.setAttribute("dominant-baseline", "middle");
+                text.setAttribute("fill", "rgba(255,255,255,0.8)");
+                text.setAttribute("font-size", "6");
+                text.setAttribute("font-weight", "bold");
+                text.setAttribute("pointer-events", "none");
+                text.setAttribute("transform", `rotate(${rotateAngle}, ${tx}, ${ty})`);
+                text.textContent = intent;
+                svg.appendChild(text);
+            });
+
+            const sContainer = document.getElementById('stance-labels');
+            for(let i=STANCES.length-1; i>=0; i--) {
+                const div = document.createElement('div');
+                div.innerText = STANCES[i];
+                div.className = `text-xs font-bold uppercase transition-all ${i===2 ? 'text-pink-400 scale-110' : 'text-white/30'}`;
+                div.id = `stance-lbl-${i}`;
+                sContainer.appendChild(div);
+            }
+        }
+
+        function selectIntent(idx, el) {
+            matrixState.intent = idx;
+            document.getElementById('active-intent').innerText = INTENTS[idx];
+            document.querySelectorAll('path').forEach(p => {
+                p.setAttribute("fill", "rgba(255,255,255,0.05)");
+                p.classList.remove("active-sector");
+            });
+            if(el) el.setAttribute("fill", "#db2777"); 
+            else {
+                const paths = document.querySelectorAll('#intent-wheel path');
+                if(paths[idx]) paths[idx].setAttribute("fill", "#db2777");
+            }
+            previewAction();
+        }
+
+        function updateStance(val) {
+            matrixState.stance = parseInt(val);
+            document.querySelectorAll('#stance-labels div').forEach((el, i) => {
+                const targetIdx = val; 
+                const targetEl = document.getElementById(`stance-lbl-${targetIdx}`);
+                if(el === targetEl) {
+                    el.className = 'text-xs font-bold uppercase transition-all text-pink-400 scale-110 shadow-white drop-shadow-md';
+                } else {
+                    el.className = 'text-xs font-bold uppercase transition-all text-white/30';
+                }
+            });
+            previewAction();
+        }
+
+        function previewAction() {
+            const log = document.getElementById('matrix-log');
+            const intent = INTENTS[matrixState.intent];
+            const stance = STANCES[matrixState.stance];
+            
+            const oldPrev = document.querySelector('.log-entry.prediction');
+            if(oldPrev) oldPrev.remove();
+
+            const entry = document.createElement('div');
+            entry.className = "log-entry prediction";
+            entry.innerHTML = `PREVIEW: ${intent} [${stance}]<br><span style="font-size:10px; color:#aaa;">${INTENT_DESC[intent]}<br>${STANCE_DESC[stance]}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function updateNarrativeButtons() {
+            const actBtn = document.getElementById('commit-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const nextLabel = document.getElementById('next-btn-label');
+
+            if (state.narrativeBeat === 0) {
+                actBtn.classList.remove('hidden');
+                nextBtn.classList.add('hidden');
+            } else {
+                actBtn.classList.add('hidden');
+                nextBtn.classList.remove('hidden');
+                nextLabel.innerText = `NEXT (${state.narrativeBeat}/3)`;
+            }
+        }
+
+        async function advanceNarrative() {
+             const btn = document.getElementById('next-btn');
+             const apiKey = sessionStorage.getItem('v7_api_key');
+
+             if (!apiKey) return;
+
+             btn.disabled = true;
+             btn.innerHTML = `<i class="fas fa-spinner fa-spin text-xl"></i>`;
+
+             let locData = findLocation(state.currentLocation);
+             // Construct contextual prompt
+             let contextBlock = `
+             Current Location: ${state.currentLocation}
+             Location Desc: ${locData ? locData.desc : "Unknown Area"}
+             Location Tags: ${locData ? (locData.tags || []).join(", ") : ""}
+             Thermal: ${state.temp}°F
+             Visibility: ${state.vis}%
+             Archetype: ${document.getElementById('archetype-name').innerText}
+             `;
+
+             let prompt = SYSTEM_PROMPT.replace("{CURRENT_LOC}", state.currentLocation)
+                                       .replace("{ARCHETYPE}", document.getElementById('archetype-name').innerText)
+                                       .replace("{BEAT}", state.narrativeBeat)
+                                       .replace("{PHASE}", `Phase ${state.gameStage.phase}`)
+                                       .replace("{SLOT}", `Slot ${state.gameStage.slot}`);
+            
+             const userContent = JSON.stringify({
+                command: "CONTINUE",
+                context: contextBlock,
+                previous_context: "Player clicked Next. Continue the scene based on previous output."
+             });
+
+             await executeApiCall(prompt, userContent);
+
+             state.narrativeBeat++;
+             if(state.narrativeBeat > 3) state.narrativeBeat = 0; 
+             
+             btn.disabled = false;
+             btn.innerHTML = `<i class="fas fa-forward text-3xl"></i><span class="text-sm" id="next-btn-label">NEXT</span>`;
+             updateNarrativeButtons();
+        }
+
+        async function commitAction() {
+            state.narrativeBeat = 1; 
+            updateNarrativeButtons();
+            
+            const intent = INTENTS[matrixState.intent];
+            const stance = STANCES[matrixState.stance];
+            const archetype = document.getElementById('archetype-name').innerText;
+
+            // Apply Archetype Bonuses (Day 0 logic)
+            if (state.gameStage.phase === 1) {
+                if (stance === 'BOLD') { state.baseStats.flair += 3; state.baseStats.heart += 2; }
+                if (stance === 'SHARP') { state.baseStats.wit += 3; state.baseStats.will += 2; }
+                if (stance === 'STOIC') { state.baseStats.will += 3; state.baseComp += 10; }
+                if (stance === 'SINCERE') { state.baseStats.heart += 3; state.baseStats.grace += 2; }
+                if (stance === 'ELEGANT') { state.baseStats.grace += 3; state.baseStats.flair += 2; }
+                updateSim(); 
+            }
+
+            let locData = findLocation(state.currentLocation);
+             // Construct contextual prompt
+             let contextBlock = `
+             Current Location: ${state.currentLocation}
+             Location Desc: ${locData ? locData.desc : "Unknown Area"}
+             Location Tags: ${locData ? (locData.tags || []).join(", ") : ""}
+             Thermal: ${state.temp}°F
+             Visibility: ${state.vis}%
+             Archetype: ${document.getElementById('archetype-name').innerText}
+             `;
+
+            let prompt = SYSTEM_PROMPT.replace("{CURRENT_LOC}", state.currentLocation)
+                                      .replace("{ARCHETYPE}", archetype)
+                                      .replace("{BEAT}", "1 (Setup)")
+                                      .replace("{PHASE}", `Phase ${state.gameStage.phase}`)
+                                      .replace("{SLOT}", `Slot ${state.gameStage.slot}`);
+
+            const userContent = JSON.stringify({
+                action: { intent, stance },
+                state: state,
+                context: contextBlock,
+                loadout: equipped
+            });
+
+            await executeApiCall(prompt, userContent);
+        }
+
+        async function executeApiCall(systemText, userJson) {
+            const log = document.getElementById('matrix-log');
+            const apiKey = sessionStorage.getItem('v7_api_key');
+            
+            if (!apiKey) {
+                log.innerHTML += `<div class="p-2 bg-red-500/10 border-l-2 border-red-500 rounded-r mb-2 text-[10px] text-red-300">ERROR: No Brain Found.</div>`;
+                return;
+            }
+
+            let url, payload;
+            if (apiKey.startsWith('sk-')) {
+                url = 'https://api.openai.com/v1/chat/completions';
+                payload = { model: "gpt-4o", messages: [{ role: "system", content: systemText }, { role: "user", content: userJson }] };
+            } else if (apiKey.startsWith('AIza')) {
+                url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`;
+                payload = { contents: [{ role: "user", parts: [{ text: systemText + "\n\nUSER INPUT: " + userJson }] }] };
+            }
+
+            try {
+                const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(apiKey.startsWith('sk-') ? { 'Authorization': `Bearer ${apiKey}` } : {}) }, body: JSON.stringify(payload) });
+                const data = await response.json();
+                if(data.error) throw new Error(data.error.message || "API Error");
+
+                let aiText = "";
+                if(data.choices) aiText = data.choices[0].message.content; 
+                else
